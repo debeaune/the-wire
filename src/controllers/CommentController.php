@@ -24,6 +24,6 @@ class CommentController {
         $comment = new Comment(0, $nom, $contenu, $date, $articleId);
         $this->commentRepository->save($comment);
 
-        header('Location: /articles/' . $articleId);
+        header('Location: /article/'. $articleId);
     }
 }

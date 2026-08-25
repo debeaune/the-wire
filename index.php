@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 require_once __DIR__ . '/src/classes/Router.php';
 require_once __DIR__ . '/src/controllers/ArticleController.php';
@@ -7,31 +8,34 @@ require_once __DIR__ . '/src/controllers/MessageController.php';
 
 $router = new Router();
 
+$articleController = new ArticleController();
+$commentController = new CommentController();
+$messageController = new MessageController();
+
 // Routes GET
-$router->get('/', function() {
-    $controller = new ArticleController();
-    $controller->index();
+$router->get('/', function() use ($articleController) {
+    $articleController->index();
 });
 
-$router->get('/article/{id}', function($id) {
-    $controller = new ArticleController();
-    $controller->show((int) $id);
+$router->get('/article/{id}', function($id) use ($articleController) {
+    $articleController->show((int) $id);
 });
 
-$router->get('/salon', function() {
-    $controller = new MessageController();
-    $controller->index();
+$router->get('/salon', function() use ($messageController) {
+    $messageController->index();
 });
 
 // Routes POST
-$router->post('/comments/store', function() {
-    $controller = new CommentController();
-    $controller->store();
+$router->post('/article/store', function() use ($articleController) {
+    $articleController->store();
 });
 
-$router->post('/messages/store', function() {
-    $controller = new MessageController();
-    $controller->store();
+$router->post('/comments/store', function() use ($commentController) {
+    $commentController->store();
+});
+
+$router->post('/messages/store', function() use ($messageController) {
+    $messageController->store();
 });
 
 // Dispatch

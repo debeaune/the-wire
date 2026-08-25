@@ -23,9 +23,17 @@
             <span class="text-xs text-gray-400 uppercase tracking-wider"><?= htmlspecialchars($article->getSource() ?? '') ?></span>
             <h2 class="text-lg font-bold text-gray-900 mt-1 mb-2 line-clamp-2"><?= htmlspecialchars($article->getTitre()) ?></h2>
             <p class="text-gray-500 text-sm line-clamp-3"><?= htmlspecialchars($article->getContenu()) ?></p>
-            <a href="<?= htmlspecialchars($article->getUrl()) ?>" target="_blank" class="inline-block mt-4 text-sm font-medium text-gray-900 hover:underline">
-                Lire l'article →
-            </a>
+            <form action="/article/store" method="POST">
+                <input type="hidden" name="titre" value="<?= htmlspecialchars($article->getTitre()) ?>">
+                <input type="hidden" name="image" value="<?= htmlspecialchars($article->getImage() ?? '') ?>">
+                <input type="hidden" name="contenu" value="<?= htmlspecialchars($article->getContenu()) ?>">
+                <input type="hidden" name="url" value="<?= htmlspecialchars($article->getUrl()) ?>">
+                <input type="hidden" name="auteur" value="<?= htmlspecialchars($article->getAuteur()) ?>">
+                <input type="hidden" name="source" value="<?= htmlspecialchars($article->getSource() ?? '') ?>">
+                <button type="submit" class="mt-4 text-sm font-medium text-gray-900 hover:underline bg-transparent border-none cursor-pointer p-0">
+                    Lire l'article →
+                </button>
+            </form>
         </div>
     </div>
     <?php endforeach; ?>

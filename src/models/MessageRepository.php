@@ -11,7 +11,7 @@ class MessageRepository {
     }
 
     public function findAll(): array {
-        $stmt = $this->pdo->query("SELECT * FROM messages ORDER BY date DESC");
+        $stmt = $this->pdo->query("SELECT * FROM messages ORDER BY datePublication DESC");
         $rows = $stmt->fetchAll();
         $messages = [];
         foreach ($rows as $row) {

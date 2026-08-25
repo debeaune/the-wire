@@ -50,12 +50,12 @@ class ArticleRepository {
         );
     }
 
-    public function save(Article $article): bool {
+    public function save(Article $article): int {
         $stmt = $this->pdo->prepare("
             INSERT INTO articles (titre, auteur, sousTitre, contenu, image, source, url, datePublication, categorie)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
-        return $stmt->execute([
+        $stmt->execute([
             $article->getTitre(),
             $article->getAuteur(),
             $article->getSousTitre(),
@@ -66,5 +66,6 @@ class ArticleRepository {
             $article->getDatePublication(),
             $article->getCategorie()
         ]);
+        return (int) $this->pdo->lastInsertId();
     }
 }
