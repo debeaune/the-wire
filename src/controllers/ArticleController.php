@@ -46,7 +46,6 @@ class ArticleController {
             null
         );
         $articleId = $this->articleRepository->save($article);
-        var_dump($articleId);
         header('Location: /article/' . $articleId);
         exit;
     }
