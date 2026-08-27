@@ -26,6 +26,24 @@ class MessageRepository {
         return $messages;
     }
 
+    public function findNewMessages(int $lastId): array {
+        $sql = "SELECT * FROM messages WHERE id > :lastId ORDER BY id ASC";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':lastId' => $lastId]);
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $messages = [];
+        foreach ($results as $row) {
+            $messages[] = new Message(
+                $row['id'],
+                $row['auteur'],
+                $row['contenu'],
+                $row['datePublication'],
+                $row['langue']
+            );
+        }
+        return $messages;
+    }   
+
     public function findById(int $id): ?Message {
         $stmt = $this->pdo->prepare("SELECT * FROM messages WHERE id = ?");
         $stmt->execute([$id]);

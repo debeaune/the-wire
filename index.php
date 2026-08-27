@@ -25,6 +25,10 @@ $router->get('/salon', function() use ($messageController) {
     $messageController->index();
 });
 
+$router->get('/salon/stream', function() {    // ← ici
+    require_once __DIR__ . '/src/api/ChatStream.php';
+});
+
 // Routes POST
 $router->post('/article/store', function() use ($articleController) {
     $articleController->store();

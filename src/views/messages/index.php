@@ -7,7 +7,6 @@
         <p class="text-gray-500">Échangez en temps réel sur l'actualité internationale</p>
     </div>
 
-    <!-- Messages -->
     <div id="messages" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6 h-64 md:h-96 overflow-y-auto">
         <?php foreach ($messages as $message): ?>
         <div class="mb-4">
@@ -21,7 +20,6 @@
         <?php endforeach; ?>
     </div>
 
-    <!-- Formulaire message -->
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         <form action="/messages/store" method="POST" class="flex flex-col gap-4">
             <input type="text" name="auteur" placeholder="Votre nom" required
@@ -43,6 +41,42 @@
     </div>
 
 </div>
+
+<script>
+    const messagesDiv = document.getElementById('messages');
+    const source = new EventSource('/salon/stream');
+
+    source.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+    
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('mb-4');
+    
+        messageDiv.innerHTML = `
+            <div class="flex items-center gap-2 mb-1">
+                <span class="js-author font-medium text-gray-900"></span>
+                <span class="js-date text-xs text-gray-400"></span>
+                <span class="js-lang text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full"></span>
+            </div>
+        `;
+    
+        messageDiv.querySelector('.js-author').textContent = data.auteur;
+        messageDiv.querySelector('.js-date').textContent = data.date;
+        messageDiv.querySelector('.js-lang').textContent = data.langue;
+    
+        const p = document.createElement('p');
+        p.classList.add('text-gray-700');
+        p.textContent = data.contenu;
+        messageDiv.appendChild(p);
+    
+        messagesDiv.appendChild(messageDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    };
+
+    source.onerror = function() {
+        console.log('SSE connexion perdue - fallback polling');
+    };
+</script>
 
 <?php
 $content = ob_get_clean();
