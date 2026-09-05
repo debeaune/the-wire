@@ -15,6 +15,37 @@
             <a href="<?= htmlspecialchars($article->getUrl()) ?>" target="_blank" class="inline-block mt-6 px-6 py-3 bg-gray-900 text-white rounded-xl hover:bg-gray-700 transition-colors">
                 Lire l'article complet →
             </a>
+            <!-- Réactions -->
+            <?php
+                $counts = [];
+                foreach ($reactions as $r) {
+                    $counts[$r['type']] = $r['total'];
+                }
+            ?>
+
+            <div class="flex gap-4 mt-6">
+                <form action="/reactions/store" method="POST">
+                    <input type="hidden" name="articleId" value="<?= $article->getId() ?>">
+                    <input type="hidden" name="type" value="like">
+                    <button type="submit" class="text-2xl hover:scale-125 transition-transform">
+                        👍 <?= $counts['like'] ?? 0 ?>
+                    </button>
+                </form>
+                <form action="/reactions/store" method="POST">
+                    <input type="hidden" name="articleId" value="<?= $article->getId() ?>">
+                    <input type="hidden" name="type" value="love">
+                    <button type="submit" class="text-2xl hover:scale-125 transition-transform">
+                        ❤️ <?= $counts['love'] ?? 0 ?>
+                    </button>
+                </form>
+                <form action="/reactions/store" method="POST">
+                    <input type="hidden" name="articleId" value="<?= $article->getId() ?>">
+                    <input type="hidden" name="type" value="wow">
+                    <button type="submit" class="text-2xl hover:scale-125 transition-transform">
+                        😮 <?= $counts['wow'] ?? 0 ?>
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 

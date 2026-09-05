@@ -34,3 +34,10 @@ CREATE VIRTUAL TABLE IF NOT EXISTS articles_fts USING fts5(
     content='articles',
     content_rowid='id'
 );
+
+CREATE TABLE IF NOT EXISTS reactions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    articleId INTEGER NOT NULL,
+    type TEXT NOT NULL,
+    dateReaction TEXT NOT NULL
+);

@@ -34,6 +34,12 @@ class ArticleController {
         }
         $commentRepository = new CommentRepository();
         $comments = $commentRepository->findByArticleId($id);
+
+        require_once __DIR__ . '/../models/ReactionRepository.php';
+       
+        $reactionRepository = new ReactionRepository();
+        $reactions = $reactionRepository->countByArticleId($id);
+
         require_once __DIR__ . '/../views/articles/show.php';
     }
 
