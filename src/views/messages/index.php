@@ -44,11 +44,15 @@
 
 <script>
     const messagesDiv = document.getElementById('messages');
-    const source = new EventSource('/salon/stream');
+    const currentPort = window.location.port;
+    const sseUrl = currentPort 
+    ? `http://${window.location.hostname}:${currentPort}/salon/stream`
+    : '/salon/stream';
+    const source = new EventSource(sseUrl);
 
     source.onmessage = function(event) {
-        const data = JSON.parse(event.data);
-    
+        console.log("Données reçues du serveur SSE :", event.data);
+        const data = JSON.parse(event.data);   
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('mb-4');
     

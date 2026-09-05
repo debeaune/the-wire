@@ -18,6 +18,11 @@ class ArticleController {
         $pays = $_GET['pays'] ?? 'fr';
         $categorie = $_GET['categorie'] ?? 'technology';
         $articles = $this->newsService->fetchArticles($categorie, $pays);
+
+        foreach ($articles as $article) {
+            $this->articleRepository->save($article);
+        }
+    
         require_once __DIR__ . '/../views/articles/index.php';
     }
 

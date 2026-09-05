@@ -26,3 +26,11 @@ CREATE TABLE IF NOT EXISTS messages (
     datePublication TEXT NOT NULL,
     langue TEXT NOT NULL
 );
+
+CREATE VIRTUAL TABLE IF NOT EXISTS articles_fts USING fts5(
+    titre,
+    contenu,
+    source,
+    content='articles',
+    content_rowid='id'
+);

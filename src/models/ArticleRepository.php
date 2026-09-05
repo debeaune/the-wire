@@ -51,6 +51,14 @@ class ArticleRepository {
     }
 
     public function save(Article $article): int {
+    // Vérifier si l'article existe déjà ← ICI EN PREMIER
+    $check = $this->pdo->prepare("SELECT id FROM articles WHERE url = ?");
+    $check->execute([$article->getUrl()]);
+    $existing = $check->fetch();
+    
+    if ($existing) {
+        return (int) $existing['id'];
+    }
         $stmt = $this->pdo->prepare("
             INSERT INTO articles (titre, auteur, sousTitre, contenu, image, source, url, datePublication, categorie)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -66,6 +74,47 @@ class ArticleRepository {
             $article->getDatePublication(),
             $article->getCategorie()
         ]);
-        return (int) $this->pdo->lastInsertId();
+
+        $articleId = (int) $this->pdo->lastInsertId();
+
+        $stmt2 = $this->pdo->prepare("
+            INSERT INTO articles_fts(rowid, titre, contenu, source)
+            VALUES (?, ?, ?, ?)
+        ");
+        $stmt2->execute([
+            $articleId,
+            $article->getTitre(),
+            $article->getContenu(),
+            $article->getSource() ?? ''
+        ]);
+
+        return $articleId;
+    }
+
+    public function search(string $query): array {
+        $stmt = $this->pdo->prepare("
+            SELECT articles.* FROM articles
+            JOIN articles_fts ON articles.id = articles_fts.rowid
+            WHERE articles_fts MATCH ?
+            ORDER BY rank
+        ");
+        $stmt->execute([$query]);
+        $rows = $stmt->fetchAll();
+        $articles = [];
+        foreach ($rows as $row) {
+            $articles[] = new Article(
+                $row['id'],
+                $row['titre'],
+                $row['auteur'],
+                $row['sousTitre'] ?? null,
+                $row['contenu'],
+                $row['image'] ?? null,
+                $row['source'] ?? null,
+                $row['url'],
+                $row['datePublication'],
+                $row['categorie'] ?? null
+            );
+        }
+        return $articles;
     }
 }

@@ -17,6 +17,11 @@
         <div class="flex gap-6">
             <a href="/" class="hover:text-gray-300 transition-colors">Actualités</a>
             <a href="/salon" class="hover:text-gray-300 transition-colors">Salon</a>
+            <form action="/search" method="GET" class="flex items-center gap-2">
+                <input type="text" name="q" placeholder="Rechercher..." 
+                    class="border border-gray-700 bg-gray-800 text-white rounded-xl px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-white">
+                <button type="submit" class="text-white text-sm hover:text-gray-300">🔍</button>
+            </form>
         </div>
     </nav>
 
