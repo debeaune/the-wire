@@ -25,6 +25,7 @@
 
             <div class="flex gap-4 mt-6">
                 <form action="/reactions/store" method="POST">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
                     <input type="hidden" name="articleId" value="<?= $article->getId() ?>">
                     <input type="hidden" name="type" value="like">
                     <button type="submit" class="text-2xl hover:scale-125 transition-transform">
@@ -32,6 +33,7 @@
                     </button>
                 </form>
                 <form action="/reactions/store" method="POST">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
                     <input type="hidden" name="articleId" value="<?= $article->getId() ?>">
                     <input type="hidden" name="type" value="love">
                     <button type="submit" class="text-2xl hover:scale-125 transition-transform">
@@ -39,6 +41,7 @@
                     </button>
                 </form>
                 <form action="/reactions/store" method="POST">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
                     <input type="hidden" name="articleId" value="<?= $article->getId() ?>">
                     <input type="hidden" name="type" value="wow">
                     <button type="submit" class="text-2xl hover:scale-125 transition-transform">
@@ -71,6 +74,7 @@
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         <h3 class="text-lg font-bold text-gray-900 mb-4">Laisser un commentaire</h3>
         <form action="/comments/store" method="POST">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
             <input type="hidden" name="articleId" value="<?= $article->getId() ?>">
             <div class="mb-4">
                 <input type="text" name="nom" placeholder="Votre nom" required

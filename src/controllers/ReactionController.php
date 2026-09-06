@@ -11,6 +11,10 @@ class ReactionController {
     }
 
     public function store(): void {
+        if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+            http_response_code(403);
+            die('Token CSRF invalide');
+        }
         $articleId = (int) $_POST['articleId'] ?? 0;
         $type = $_POST['type'] ?? '';
 

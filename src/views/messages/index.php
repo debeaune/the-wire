@@ -22,6 +22,7 @@
 
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         <form action="/messages/store" method="POST" class="flex flex-col gap-4">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
             <input type="text" name="auteur" placeholder="Votre nom" required
                 class="border border-gray-200 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900">
             <select name="langue" class="border border-gray-200 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900">

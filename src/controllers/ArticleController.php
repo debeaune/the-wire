@@ -44,6 +44,10 @@ class ArticleController {
     }
 
     public function store(): void {
+        if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+            http_response_code(403);
+            die('Token CSRF invalide');
+        }
         $article = new Article(
             0,
             $_POST['titre'] ?? '',
