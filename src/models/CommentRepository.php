@@ -1,6 +1,5 @@
 <?php
 
-echo "CommentRepository chargé !";
 require_once __DIR__ . '/../classes/Database.php';
 require_once __DIR__ . '/Comment.php';
 

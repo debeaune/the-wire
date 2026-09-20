@@ -17,15 +17,21 @@ class ArticleController {
     public function index(): void {
         $pays = $_GET['pays'] ?? 'fr';
         $categorie = $_GET['categorie'] ?? 'technology';
-        $articles = $this->newsService->fetchArticles($categorie, $pays);
-
-        foreach ($articles as $article) {
+    
+        // Essayer l'API externe
+        $articlesFromApi = $this->newsService->fetchArticles($categorie, $pays);
+    
+        // Si l'API répond, on sauvegarde
+        foreach ($articlesFromApi as $article) {
             $this->articleRepository->save($article);
         }
     
+        // Dans tous les cas, on affiche ce qui est en base
+        $articles = $this->articleRepository->findAll();
+
         require_once __DIR__ . '/../views/articles/index.php';
     }
-
+    
     public function show(int $id): void {
         $article = $this->articleRepository->findById($id);
         if (!$article) {

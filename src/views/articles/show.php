@@ -24,33 +24,52 @@
             ?>
 
             <div class="flex gap-4 mt-6">
-                <form action="/reactions/store" method="POST">
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
-                    <input type="hidden" name="articleId" value="<?= $article->getId() ?>">
-                    <input type="hidden" name="type" value="like">
-                    <button type="submit" class="text-2xl hover:scale-125 transition-transform">
-                        👍 <?= $counts['like'] ?? 0 ?>
-                    </button>
-                </form>
-                <form action="/reactions/store" method="POST">
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
-                    <input type="hidden" name="articleId" value="<?= $article->getId() ?>">
-                    <input type="hidden" name="type" value="love">
-                    <button type="submit" class="text-2xl hover:scale-125 transition-transform">
-                        ❤️ <?= $counts['love'] ?? 0 ?>
-                    </button>
-                </form>
-                <form action="/reactions/store" method="POST">
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
-                    <input type="hidden" name="articleId" value="<?= $article->getId() ?>">
-                    <input type="hidden" name="type" value="wow">
-                    <button type="submit" class="text-2xl hover:scale-125 transition-transform">
-                        😮 <?= $counts['wow'] ?? 0 ?>
-                    </button>
-                </form>
-            </div>
-        </div>
+            <?php foreach ([
+                    'like' => ['label' => 'J\'aime', 'svg' => '<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/></svg>'],
+                    'favori' => ['label' => 'Favori', 'svg' => '<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>'],
+                    'interessant' => ['label' => 'Intéressant', 'svg' => '<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m1.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>'],
+                ] as $type => $config): ?>
+                <button 
+                    class="reaction-btn flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 hover:border-gray-900 hover:bg-gray-50 transition-all duration-200"
+                    data-type="<?= $type ?>"
+                    data-article-id="<?= $article->getId() ?>"
+                    data-csrf="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+                    <?= $config['svg'] ?>
+                        <span class="text-sm font-medium text-gray-700"><?= $config['label'] ?></span>
+                        <span class="reaction-count text-sm text-gray-500" id="count-<?= $type ?>"><?= $counts[$type] ?? 0 ?></span>
+                </button>
+        <?php endforeach; ?>
     </div>
+
+    <script>
+        document.querySelectorAll('.reaction-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const articleId = this.dataset.articleId;
+                const type = this.dataset.type;
+                const csrf = this.dataset.csrf;
+
+                // Animation
+                this.classList.add('scale-95');
+                setTimeout(() => this.classList.remove('scale-95'), 150);
+
+                fetch('/reactions/store', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: `articleId=${articleId}&type=${type}&csrf_token=${csrf}`
+                })
+                .then(res => res.json())
+                .then(data => {
+                    // Mettre à jour les compteurs
+                    document.getElementById('count-like').textContent = data.like ?? 0;
+                    document.getElementById('count-favori').textContent = data.favori ?? 0;
+                    document.getElementById('count-interessant').textContent = data.interessant ?? 0;
+                });
+            });
+        });
+    </script>
 
     <!-- Fil de commentaires -->
     <div class="mb-8">
